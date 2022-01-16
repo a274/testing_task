@@ -25,18 +25,11 @@ public class UserService {
     @Transactional
     public void create(String login, String email, String status) {
         User user = new User();
-        user.setId(UserGenerator.newId());
         user.setLogin(login);
         user.setEmail(email);
         user.setStatus(status);
-        log.info(String.format("New user: %s %s %s %s", user.getId(), user.getLogin(), user.getEmail(), user.getStatus()));
+        log.info(String.format("New user: %s %s %s", user.getLogin(), user.getEmail(), user.getStatus()));
         userRepo.save(user);
-    }
-
-    @Transactional(readOnly = true)
-    public User getUserById(String id) {
-        Optional<User> user = userRepo.findById(id);
-        return user.orElse(null);
     }
 
     @Transactional(readOnly = true)
@@ -46,7 +39,8 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User getUserByEmail(String email) {
-        return userRepo.findByEmail(email);
+        Optional<User> user = userRepo.findById(email);
+        return user.orElse(null);
     }
 
     @Transactional(readOnly = true)
@@ -60,28 +54,21 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(String id) {
-        userRepo.deleteById(id);
-    }
-
-    @Transactional
-    public void disableUser(String id) {
-        User user = getUserById(id);
-        if (user == null) return;
+    public void disableUser(String email) {
+        User user = getUserByEmail(email);
         user.setStatus(Status.INACTIVE.name());
         userRepo.save(user);
     }
 
     @Transactional
-    public void enableUser(String id) {
-        User user = getUserById(id);
-        if (user == null) return;
+    public void enableUser(String email) {
+        User user = getUserByEmail(email);
         user.setStatus(Status.ACTIVE.name());
         userRepo.save(user);
     }
 
     @Transactional
-    @Scheduled(fixedRateString = "${service.fill-db}")
+    @Scheduled(fixedRateString = "${service.fill-db-every5min}")
     public void fillDB() {
         for (int i = 0; i < 10; i++) {
             create(UserGenerator.newLogin(), UserGenerator.newEmail(), Status.ACTIVE.name());
@@ -92,7 +79,7 @@ public class UserService {
     public void scheduledDisabling() {
         List<User> allUsers = userRepo.findAll();
         for (User user : allUsers) {
-            disableUser(user.getId());
+            disableUser(user.getEmail());
         }
         log.info("users disabled");
     }

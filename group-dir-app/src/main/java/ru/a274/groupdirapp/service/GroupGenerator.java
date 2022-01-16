@@ -3,20 +3,20 @@ package ru.a274.groupdirapp.service;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.a274.groupdirapp.model.User;
-import ru.a274.groupdirapp.repository.UserRepo;
+import ru.a274.groupdirapp.model.Group;
+import ru.a274.groupdirapp.repository.GroupRepo;
 
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Random;
 
 @Component
-public class UserGenerator {
-    private static UserRepo userRepo;
+public class GroupGenerator {
+    private static GroupRepo groupRepo;
 
     @Autowired
-    public UserGenerator(UserRepo userRepo) {
-        UserGenerator.userRepo = userRepo;
+    public GroupGenerator(GroupRepo groupRepo) {
+        GroupGenerator.groupRepo = groupRepo;
     }
 
     private static final Random random = new Random();
@@ -42,24 +42,13 @@ public class UserGenerator {
         domainExt.add("gov");
     }
 
-    public static String newLogin() {
-        return RandomStringUtils.randomAlphanumeric(random.nextInt(16) + 5);
-    }
-
-    public static String newEmail() {
-        String name = RandomStringUtils.randomAlphanumeric(random.nextInt(11) + 5);
-        String domain = domains.get(random.nextInt(domains.size()));
-
-        String domainExtension = domainExt.get(random.nextInt(domainExt.size()));
-        return String.format("%s@%s.%s", name, domain, domainExtension);
-    }
 
     private static String generateId() {
-        return  RandomStringUtils.randomAlphanumeric(10).toLowerCase();
+        return RandomStringUtils.randomAlphanumeric(10).toLowerCase();
     }
 
     private static boolean isValid(String newId) {
-        Optional<User> user = userRepo.findById(newId);
+        Optional<Group> user = groupRepo.findById(newId);
         return user.isPresent();
     }
 
@@ -69,5 +58,13 @@ public class UserGenerator {
             newId = generateId();
         } while (isValid(newId));
         return newId;
+    }
+
+    public static String generateEmail() {
+        String name = RandomStringUtils.randomAlphanumeric(random.nextInt(11) + 5);
+        String domain = domains.get(random.nextInt(domains.size()));
+
+        String domainExtension = domainExt.get(random.nextInt(domainExt.size()));
+        return String.format("%s@%s.%s", name, domain, domainExtension);
     }
 }

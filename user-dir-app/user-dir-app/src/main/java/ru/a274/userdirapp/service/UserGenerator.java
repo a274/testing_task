@@ -42,11 +42,11 @@ public class UserGenerator {
         domainExt.add("gov");
     }
 
-    public static String newLogin() {
+    private static String generateLogin() {
         return RandomStringUtils.randomAlphanumeric(random.nextInt(16) + 5);
     }
 
-    public static String newEmail() {
+    private static String generateEmail() {
         String name = RandomStringUtils.randomAlphanumeric(random.nextInt(11) + 5);
         String domain = domains.get(random.nextInt(domains.size()));
 
@@ -54,20 +54,30 @@ public class UserGenerator {
         return String.format("%s@%s.%s", name, domain, domainExtension);
     }
 
-    private static String generateId() {
-        return  RandomStringUtils.randomAlphanumeric(10).toLowerCase();
-    }
-
-    private static boolean isValid(String newId) {
-        Optional<User> user = userRepo.findById(newId);
+    private static boolean isInvalidEmail(String email) {
+        Optional<User> user = userRepo.findById(email);
         return user.isPresent();
     }
 
-    public static String newId() {
-        String newId;
+    public static String newEmail() {
+        String newEmail;
         do {
-            newId = generateId();
-        } while (isValid(newId));
-        return newId;
+            newEmail = generateEmail();
+        } while (isInvalidEmail(newEmail));
+        return newEmail;
     }
+
+    private static boolean isInvalidLogin(String login) {
+        User user = userRepo.findByLogin(login);
+        return user != null;
+    }
+
+    public static String newLogin() {
+        String newLogin;
+        do {
+            newLogin = generateLogin();
+        } while (isInvalidLogin(newLogin));
+        return newLogin;
+    }
+
 }

@@ -23,12 +23,12 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> getUsersByIds(@RequestParam("id") List<String> ids) {
+    public ResponseEntity<Object> getUsersByEmails(@RequestParam("email") List<String> emails) {
         List<User> users = new ArrayList<>();
-        for (String userId : ids) {
-            User user = userService.getUserById(userId);
+        for (String email : emails) {
+            User user = userService.getUserByEmail(email);
             if (user == null)
-                return ResponseEntity.badRequest().body(new ResponseError("User not found for id: " + userId));
+                return ResponseEntity.badRequest().body(new ResponseError("User not found for email: " + email));
             users.add(user);
         }
         return ResponseEntity.ok().body(users);

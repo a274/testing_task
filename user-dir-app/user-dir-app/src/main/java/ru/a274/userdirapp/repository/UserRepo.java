@@ -9,5 +9,4 @@ import ru.a274.userdirapp.model.User;
 public interface UserRepo extends JpaRepository<User, String> {
     User findByLogin(String login);
     User findByEmail(String email);
-    void deleteById(String id);
 }
