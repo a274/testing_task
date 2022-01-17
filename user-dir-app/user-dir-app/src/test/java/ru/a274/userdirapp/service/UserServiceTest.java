@@ -29,11 +29,14 @@ class UserServiceTest {
 
     @BeforeAll
     static void create() {
+        user1 = new User();
+        user1.setId("someId");
         user1.setLogin("login1");
         user1.setEmail("test@test.com");
         user1.setStatus(Status.ACTIVE.name());
 
         user2 = new User();
+        user2.setId("someId2");
         user2.setLogin("login2");
         user2.setEmail("test2@test.com");
         user2.setStatus(Status.ACTIVE.name());
@@ -42,7 +45,7 @@ class UserServiceTest {
     @Test
     void getUserById() {
         Mockito.when(userRepo.findById(anyString())).thenReturn(java.util.Optional.ofNullable(user1));
-        assertEquals(user1, userRepo.findById("some_string_id").get());
+        assertEquals(user1, userRepo.findById("someId").get());
     }
 
     @Test
