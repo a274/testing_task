@@ -3,6 +3,7 @@ package ru.a274.reportdirapp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 import ru.a274.reportdirapp.model.request.AuthUser;
 import ru.a274.reportdirapp.model.request.RequestReport;
 import ru.a274.reportdirapp.service.*;
@@ -11,13 +12,14 @@ import javax.mail.MessagingException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class PostReportValidator {
     private final UserService userService;
     private final GroupValidityService groupValidityService;
     private final ReportValidityService reportValidityService;
     private final GroupEmailService groupEmailService;
     private final UserAuthService userAuthService;
-    private List<String> emailList = new ArrayList<>();
+    private final List<String> emailList = new ArrayList<>();
 
     @Autowired
     public PostReportValidator(UserService userService, GroupValidityService groupValidityService,

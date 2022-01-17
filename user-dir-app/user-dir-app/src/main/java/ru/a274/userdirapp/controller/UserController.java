@@ -58,27 +58,6 @@ public class UserController {
         return ResponseEntity.ok().body(users);
     }
 
-    /*
-    @GetMapping("/disable")
-    public ResponseEntity<Object> disableUser(@RequestParam("id") String userId) {
-        User user = userService.getUserById(userId);
-        if (user == null) {
-            return ResponseEntity.badRequest().body(new ResponseError("User not found for id " + userId));
-        }
-        userService.disableUser(userId);
-        return ResponseEntity.ok().body(user);
-    }
-
-    @GetMapping("/enable")
-    public ResponseEntity<Object> enableUser(@RequestParam("id") String userId) {
-        User user = userService.getUserById(userId);
-        if (user == null) {
-            return ResponseEntity.badRequest().body(new ResponseError("User not found for id " + userId));
-        }
-        userService.enableUser(userId);
-        return ResponseEntity.ok().body(user);
-    }
-*/
     @PostMapping("/create")
     public ResponseEntity<Object> postController(
             @RequestBody User user) {
@@ -86,14 +65,5 @@ public class UserController {
         userService.create(user.getLogin(), user.getEmail(), user.getStatus(), user.getPassword());
         return ResponseEntity.ok().body(user);
     }
-    /*
-
-    @PostMapping("/fill")
-    public ResponseEntity<Object> fill() {
-        userService.fillDB();
-        return ResponseEntity.ok().body(new ResponseError("users created"));
-    }
-
-     */
 
 }
