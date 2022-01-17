@@ -3,6 +3,7 @@ package ru.a274.userdirapp.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.a274.userdirapp.model.Status;
@@ -11,6 +12,7 @@ import ru.a274.userdirapp.repository.UserRepo;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Slf4j
 @Service
@@ -22,14 +24,25 @@ public class UserService {
         this.userRepo = userRepo;
     }
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
     @Transactional
-    public void create(String login, String email, String status) {
+    public void create(String login, String email, String status, String password) {
         User user = new User();
+        user.setId(UserGenerator.newId());
         user.setLogin(login);
         user.setEmail(email);
         user.setStatus(status);
-        log.info(String.format("New user: %s %s %s", user.getLogin(), user.getEmail(), user.getStatus()));
+        user.setPassword(bCryptPasswordEncoder.encode(password));
+        log.info(String.format("New user: %s %s %s %s %s", user.getId(), user.getLogin(), user.getEmail(),
+                user.getStatus(), user.getPassword()));
         userRepo.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    public User getUserById(String id) {
+        Optional<User> user = userRepo.findById(id);
+        return user.orElse(null);
     }
 
     @Transactional(readOnly = true)
@@ -39,8 +52,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User getUserByEmail(String email) {
-        Optional<User> user = userRepo.findById(email);
-        return user.orElse(null);
+        return userRepo.findByEmail(email);
     }
 
     @Transactional(readOnly = true)
@@ -70,8 +82,9 @@ public class UserService {
     @Transactional
     @Scheduled(fixedRateString = "${service.fill-db-every5min}")
     public void fillDB() {
-        for (int i = 0; i < 10; i++) {
-            create(UserGenerator.newLogin(), UserGenerator.newEmail(), Status.ACTIVE.name());
+        for (int i = 0; i < new Random().nextInt(10); i++) {
+            create(UserGenerator.newLogin(), UserGenerator.newEmail(),
+                    Status.ACTIVE.name(), UserGenerator.generatePassword());
         }
     }
 

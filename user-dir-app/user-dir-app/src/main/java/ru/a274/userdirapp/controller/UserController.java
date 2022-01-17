@@ -22,13 +22,37 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping("/email")
     public ResponseEntity<Object> getUsersByEmails(@RequestParam("email") List<String> emails) {
         List<User> users = new ArrayList<>();
         for (String email : emails) {
             User user = userService.getUserByEmail(email);
             if (user == null)
-                return ResponseEntity.badRequest().body(new ResponseError("User not found for email: " + email));
+                return ResponseEntity.badRequest().body(new ResponseMessage("User not found for email: " + email));
+            users.add(user);
+        }
+        return ResponseEntity.ok().body(users);
+    }
+
+    @GetMapping
+    public ResponseEntity<Object> getUsersByLogins(@RequestParam("login") List<String> logins) {
+        List<User> users = new ArrayList<>();
+        for (String login : logins) {
+            User user = userService.getUserByLogin(login);
+            if (user == null)
+                return ResponseEntity.badRequest().body(new ResponseMessage("User not found for login: " + login));
+            users.add(user);
+        }
+        return ResponseEntity.ok().body(users);
+    }
+
+    @GetMapping("/id")
+    public ResponseEntity<Object> getUsersByIds(@RequestParam("id") List<String> ids) {
+        List<User> users = new ArrayList<>();
+        for (String id : ids) {
+            User user = userService.getUserById(id);
+            if (user == null)
+                return ResponseEntity.badRequest().body(new ResponseMessage("User not found for id: " + id));
             users.add(user);
         }
         return ResponseEntity.ok().body(users);
@@ -54,14 +78,15 @@ public class UserController {
         userService.enableUser(userId);
         return ResponseEntity.ok().body(user);
     }
-
+*/
     @PostMapping("/create")
     public ResponseEntity<Object> postController(
             @RequestBody User user) {
         log.info("user is being created " + user.getLogin());
-        userService.create(user.getLogin(), user.getEmail(), user.getStatus());
+        userService.create(user.getLogin(), user.getEmail(), user.getStatus(), user.getPassword());
         return ResponseEntity.ok().body(user);
     }
+    /*
 
     @PostMapping("/fill")
     public ResponseEntity<Object> fill() {

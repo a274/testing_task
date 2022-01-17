@@ -48,8 +48,8 @@ public class GroupGenerator {
     }
 
     private static boolean isValid(String newId) {
-        Optional<Group> user = groupRepo.findById(newId);
-        return user.isPresent();
+        Optional<Group> group = groupRepo.findById(newId);
+        return group.isPresent();
     }
 
     public static String newId() {

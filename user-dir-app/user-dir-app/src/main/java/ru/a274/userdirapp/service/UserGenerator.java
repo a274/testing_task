@@ -80,4 +80,25 @@ public class UserGenerator {
         return newLogin;
     }
 
+    public static String generatePassword() {
+        return RandomStringUtils.randomAlphanumeric(random.nextInt(16) + 9);
+    }
+
+    private static String generateId() {
+        return RandomStringUtils.randomAlphanumeric(10).toLowerCase();
+    }
+
+    private static boolean isValid(String newId) {
+        Optional<User> user = userRepo.findById(newId);
+        return user.isPresent();
+    }
+
+    public static String newId() {
+        String newId;
+        do {
+            newId = generateId();
+        } while (isValid(newId));
+        return newId;
+    }
+
 }

@@ -88,7 +88,7 @@ public class GroupService {
     @Transactional
     @Scheduled(fixedRateString = "${service.fill-db-every5min}")
     public void fillDB() {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < new Random().nextInt(10); i++) {
             create(Status.ACTIVE.name());
         }
     }
@@ -103,7 +103,7 @@ public class GroupService {
 
     private List<Email> generateEmailList(String groupId) {
         List<Email> emailList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < new Random().nextInt(10); i++) {
             Email email = new Email();
             email.setGroup(groupId);
             email.setEmail(GroupGenerator.generateEmail());

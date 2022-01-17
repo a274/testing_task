@@ -1,14 +1,12 @@
-package ru.a274.userdirapp.model;
+package ru.a274.reportdirapp.model.db;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -21,18 +19,22 @@ public class User {
     private String id;
 
     @Column(name = "user_login")
-    @NotNull
+    @javax.validation.constraints.NotNull
     private String login;
 
     @Column(name = "user_email")
     @Email
-    @NotNull
+    @javax.validation.constraints.NotNull
     private String email;
 
     @Column(name = "user_status")
-    @NotNull
+    @javax.validation.constraints.NotNull
     private String status;
 
     @Column(name = "user_password")
     private String password;
+
+    @OneToMany(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "user_id")
+    private List<Report> reportList;
 }
